@@ -69,7 +69,7 @@ class DatePicker(TextInput):
         pHint: 0.7,0.4 
     would result in a size_hint of 0.7,0.4 being used to create the popup
     """
-    pHint_x = NumericProperty(0.5)
+    pHint_x = NumericProperty(0.8)
     pHint_y = NumericProperty(0.5)
     pHint = ReferenceListProperty(pHint_x ,pHint_y)
 

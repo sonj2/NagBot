@@ -12,6 +12,7 @@ from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
@@ -20,11 +21,13 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.graphics import *
 
 from calendar_ui import CalendarWidget, DatePicker
+from time_picker import TimePicker
 
 class CalendarPage(BoxLayout):
     def __init__(self, **kwargs):
         super(CalendarPage, self).__init__(**kwargs)
         self.orientation = "vertical"
+        self.previous_screen = ""
 
         #Title "Calendar" at top of page
         self.title = Label(text="Calendar", font_size=25)
@@ -69,20 +72,21 @@ class CalendarPage(BoxLayout):
 
     #Button 2 - View Schedule - moves to SchedulePage
     def button2_act(self, instance):
-        nag_bot_app.previous_screen = "Calendar"
         nag_bot_app.schedule_page.update_date(self.cal.active_date)
         nag_bot_app.screen_manager.current = "Schedule"
+        nag_bot_app.schedule_page.previous_screen = "Calendar"
 
     #Button 3 - View Blacklist - moves to the BlacklistPage
     def button3_act(self, instance):
-        nag_bot_app.previous_screen = "Calendar"
         nag_bot_app.screen_manager.current = "Blacklist"
+        nag_bot_app.blacklist_page.previous_screen = "Calendar"
 
 
 class SchedulePage(BoxLayout):
     def __init__(self, **kwargs):
         super(SchedulePage, self).__init__(**kwargs)
         self.orientation = "vertical"
+        self.previous_screen = ""
 
         #Title - "Schedule" at top - left aligned
         self.title = Label(text="Schedule", font_size=25, halign="left", valign="middle",
@@ -153,84 +157,35 @@ class SchedulePage(BoxLayout):
 
     #Button1 - Add Work/Break Block
     def button1_act(self, instance):
-        nag_bot_app.previous_screen = "Schedule"
         nag_bot_app.screen_manager.current = "Edit Block"
+        nag_bot_app.edit_block_page.previous_screen = "Schedule"
         pass
 
     #Button 2 - Back to Calendar - go back to the CalendarPage
     def button2_act(self, instance):
-        nag_bot_app.previous_screen = "Schedule"
         nag_bot_app.screen_manager.current = "Calendar"
+        nag_bot_app.calendar_page.previous_screen = "Schedule"
 
-class EditBlockPage(BoxLayout):
+
+class ToDoListPage(BoxLayout):
     def __init__(self, **kwargs):
-        super(EditBlockPage, self).__init__(**kwargs)
+        super(ToDoListPage, self).__init__(**kwargs)
         self.orientation = "vertical"
-
-        #Title "Add/Edit Block" at top of page
-        self.title = Label(text="Add/Edit Block", font_size=25)
-        self.title.size_hint_y = None
-        self.title.height = 58
-        self.add_widget(self.title)
-
-        #Float layout for frorm
-        self.form = GridLayout(cols=2)
-        self.form.size_hint_y = None
-        self.form.height = 500
-        self.add_widget(self.form)
-
-        #Form elements
-        label = Label(text="Work/Break:", font_size=20)
-        self.form.add_widget(label)
-
-        self.dropdown = DropDown()
-
-        for item in ["Work", "Break"]:
-            btn = Button(text= item,size_hint_y=None, height=44)
-            btn.bind(on_release=lambda btn: self.dropdown.select(btn.text))
-            self.dropdown.add_widget(btn)
+        self.previous_screen = ""
 
 
-        self.dropbutton = Button(text='SELECT',size_hint_y=None, height=50)
-        self.dropbutton.bind(on_release=self.dropdown.open)
-        self.dropdown.bind(on_select=lambda instance, x: setattr(self.dropbutton, 'text', x))
+class AddTaskPage(BoxLayout):
+    def __init__(self, **kwargs):
+        super(AddTaskPage, self).__init__(**kwargs)
+        self.orientation = "vertical"
+        self.previous_screen = ""
 
-        self.form.add_widget(self.dropbutton)
-
-        self.form.add_widget(Label())
-
-        #Buttons
-        self.button1 = Button(text="Add Tasks", font_size=20)
-        self.button1.bind(on_press=self.button1_act)
-        self.add_widget(self.button1)
-
-        self.button2 = Button(text="Specialized Blacklist", font_size=20)
-        self.button2.bind(on_press=self.button2_act)
-        self.add_widget(self.button2)
-
-        self.button3 = Button(text="Submit", font_size=20)
-        self.button3.bind(on_press=self.button3_act)
-        self.add_widget(self.button3)
-
-    #Button 1 - Add Tasks
-    def button1_act(self, instance):
-        nag_bot_app.previous_screen = "Edit Block"
-        pass
-
-    #Button 2 - Specialized Blacklist
-    def button2_act(self, instance):
-        nag_bot_app.previous_screen = "Edit Block"
-        pass
-
-    #Button 3 - Submit
-    def button3_act(self, instance):
-        nag_bot_app.previous_screen = "Edit Block"
-        pass
 
 class BlacklistPage(BoxLayout):
     def __init__(self, **kwargs):
         super(BlacklistPage, self).__init__(**kwargs)
         self.orientation = "vertical"
+        self.previous_screen = ""
 
         #Title "Blacklist" at top of page
         self.title = Label(text="Blacklist", font_size=25)
@@ -259,13 +214,113 @@ class BlacklistPage(BoxLayout):
 
     #Button 2 - Done - go back to previous page
     def button2_act(self, instance):
-        nag_bot_app.screen_manager.current = nag_bot_app.previous_screen
+        nag_bot_app.screen_manager.current = self.previous_screen
+        nag_bot_app.screen_manager.get_screen(self.previous_screen).previous_screen = "Blacklist"
 
+
+class EditBlockPage(BoxLayout):
+    def __init__(self, **kwargs):
+        super(EditBlockPage, self).__init__(**kwargs)
+        self.orientation = "vertical"
+        self.previous_screen = ""
+
+        #Title "Add/Edit Block" at top of page
+        self.title = Label(text="Add/Edit Block", font_size=25)
+        self.title.size_hint_y = None
+        self.title.height = 58
+        self.add_widget(self.title)
+
+        #Float layout for form
+        self.form = GridLayout(cols=2)
+        self.form.size_hint_y = None
+        self.form.height = 550
+        self.add_widget(self.form)
+
+        #Form elements
+
+        #Dropdown Selection
+        label = Label(text="Work/Break:", font_size=20)
+        self.form.add_widget(label)
+
+        self.dropdown = DropDown()
+
+        for item in ["Work", "Break"]:
+            btn = Button(text= item,size_hint_y=None, height=38)
+            btn.bind(on_release=lambda btn: self.dropdown.select(btn.text))
+            self.dropdown.add_widget(btn)
+
+        anchor = AnchorLayout(anchor_x='center', anchor_y='top')
+        self.dropbutton = Button(text='SELECT',size_hint_y=None, height=44)
+        self.dropbutton.bind(on_release=self.dropdown.open)
+        self.dropdown.bind(on_select=lambda instance, x: setattr(self.dropbutton, 'text', x))
+        anchor.add_widget(self.dropbutton)
+        self.form.add_widget(anchor)
+
+        #Start Date
+        self.form.add_widget(Label(text="Start Date:", font_size=20))
+        self.start_date = DatePicker(size_hint_y=None, height=60)
+        anchor = AnchorLayout(anchor_x='center', anchor_y='center')
+        anchor.add_widget(self.start_date)
+        self.form.add_widget(anchor)
+
+        #Start Time
+        self.form.add_widget(Label(text="Start Time:", font_size=20))
+        self.start_time = TimePicker(size_hint_y=None, height=60)
+        anchor = AnchorLayout(anchor_x='center', anchor_y='center')
+        anchor.add_widget(self.start_time)
+        self.form.add_widget(anchor)
+
+        #End Date
+        self.form.add_widget(Label(text="End Date:", font_size=20))
+        self.end_date = DatePicker(size_hint_y=None, height=60)
+        anchor = AnchorLayout(anchor_x='center', anchor_y='center')
+        anchor.add_widget(self.end_date)
+        self.form.add_widget(anchor)
+
+        #End Time
+        self.form.add_widget(Label(text="End Time:", font_size=20))
+        self.end_time = TimePicker(size_hint_y=None, height=60)
+        anchor = AnchorLayout(anchor_x='center', anchor_y='center')
+        anchor.add_widget(self.end_time)
+        self.form.add_widget(anchor)
+
+        #Buttons
+        self.button1 = Button(text="Add Tasks", font_size=20)
+        self.button1.bind(on_press=self.button1_act)
+        self.add_widget(self.button1)
+
+        self.button2 = Button(text="Specialized Blacklist", font_size=20)
+        self.button2.bind(on_press=self.button2_act)
+        self.add_widget(self.button2)
+
+        self.button3 = Button(text="Submit", font_size=20)
+        self.button3.bind(on_press=self.button3_act)
+        self.add_widget(self.button3)
+
+    #Button 1 - Add Tasks
+    def button1_act(self, instance):
+        pass
+
+    #Button 2 - Specialized Blacklist - go to Blacklist screen
+    def button2_act(self, instance):
+        nag_bot_app.screen_manager.current = "Blacklist"
+        nag_bot_app.blacklist_page.previous_screen = "Edit Block"
+        pass
+
+    #Button 3 - Submit - return to previous screen
+    def button3_act(self, instance):
+        nag_bot_app.screen_manager.current = self.previous_screen
+        nag_bot_app.screen_manager.get_screen(self.previous_screen).previous_screen = "Edit Block"
+        pass
+
+class EditBlacklistPage(BoxLayout):
+    def __init__(self, **kwargs):
+        super(EditBlacklistPage, self).__init__(**kwargs)
+        self.orientation = "vertical"
+        self.previous_screen = ""
 
 class NagBotApp(App):
     def build(self):
-
-        self.previous_screen = ""
         self.screen_manager = ScreenManager()
 
         screen = Screen(name="Calendar")
