@@ -73,11 +73,13 @@ class CalendarPage(BoxLayout):
     #Button 2 - View Schedule - moves to SchedulePage
     def button2_act(self, instance):
         nag_bot_app.schedule_page.update_date(self.cal.active_date)
+        nag_bot_app.screen_manager.transition.direction = 'left'
         nag_bot_app.screen_manager.current = "Schedule"
         nag_bot_app.schedule_page.previous_screen = "Calendar"
 
     #Button 3 - View Blacklist - moves to the BlacklistPage
     def button3_act(self, instance):
+        nag_bot_app.screen_manager.transition.direction = 'left'
         nag_bot_app.screen_manager.current = "Blacklist"
         nag_bot_app.blacklist_page.previous_screen = "Calendar"
 
@@ -157,12 +159,14 @@ class SchedulePage(BoxLayout):
 
     #Button1 - Add Work/Break Block
     def button1_act(self, instance):
+        nag_bot_app.screen_manager.transition.direction = 'left'
         nag_bot_app.screen_manager.current = "Edit Block"
         nag_bot_app.edit_block_page.previous_screen = "Schedule"
         pass
 
     #Button 2 - Back to Calendar - go back to the CalendarPage
     def button2_act(self, instance):
+        nag_bot_app.screen_manager.transition.direction = 'right'
         nag_bot_app.screen_manager.current = "Calendar"
         nag_bot_app.calendar_page.previous_screen = "Schedule"
 
@@ -214,6 +218,7 @@ class BlacklistPage(BoxLayout):
 
     #Button 2 - Done - go back to previous page
     def button2_act(self, instance):
+        nag_bot_app.screen_manager.transition.direction = 'right'
         nag_bot_app.screen_manager.current = self.previous_screen
         nag_bot_app.screen_manager.get_screen(self.previous_screen).previous_screen = "Blacklist"
 
@@ -303,12 +308,14 @@ class EditBlockPage(BoxLayout):
 
     #Button 2 - Specialized Blacklist - go to Blacklist screen
     def button2_act(self, instance):
+        nag_bot_app.screen_manager.transition.direction = 'left'
         nag_bot_app.screen_manager.current = "Blacklist"
         nag_bot_app.blacklist_page.previous_screen = "Edit Block"
         pass
 
     #Button 3 - Submit - return to previous screen
     def button3_act(self, instance):
+        nag_bot_app.screen_manager.transition.direction = 'right'
         nag_bot_app.screen_manager.current = self.previous_screen
         nag_bot_app.screen_manager.get_screen(self.previous_screen).previous_screen = "Edit Block"
         pass
