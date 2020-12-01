@@ -21,7 +21,7 @@ from kivy.uix.label import Label
 from kivy.core.window import Window
 from kivy.properties import NumericProperty, ReferenceListProperty
 
-from . import calendar_data as cal_data
+import calendar_data as cal_data
 ###########################################################
 Builder.load_string("""
 <ArrowButton>:
@@ -69,8 +69,8 @@ class DatePicker(TextInput):
         pHint: 0.7,0.4 
     would result in a size_hint of 0.7,0.4 being used to create the popup
     """
-    pHint_x = NumericProperty(0.0)
-    pHint_y = NumericProperty(0.0)
+    pHint_x = NumericProperty(0.5)
+    pHint_y = NumericProperty(0.5)
     pHint = ReferenceListProperty(pHint_x ,pHint_y)
 
     def __init__(self, touch_switch=False, *args, **kwargs):
