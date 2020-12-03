@@ -21,16 +21,16 @@ class Database:
         self.block_list = BlockList()
 
     def get_blacklist(self):
-        return self.blacklist.items
+        return self.blacklist
 
     def check_blacklist(self, site):
         return self.blacklist.check(site)
 
-    def add_blacklist(self, site):
-        return self.blacklist.add(site)
+    def add_blacklist(self, keywords):
+        return self.blacklist.add(keywords)
 
-    def remove_blacklist(self, index):
-        return self.blacklist.remove(index)
+    def remove_blacklist(self, id):
+        return self.blacklist.remove(id)
 
     def add_block(self, type, start, end):
         return self.block_list.add_block(type, start, end)
@@ -57,11 +57,11 @@ class Database:
         return block.remove_task(task_id)
 
     def save(self):
-        dbfile = open('blacklist', 'ab')
+        dbfile = open('blacklist', 'wb')
         pickle.dump(self.blacklist, dbfile)
         dbfile.close()
 
-        dbfile = open('block_list', 'ab')
+        dbfile = open('block_list', 'wb')
         pickle.dump(self.block_list, dbfile)
         dbfile.close()
 
@@ -85,7 +85,10 @@ class Database:
 class BlankKeyword(Exception):
     pass
 
-class IndexOutOfRange(Exception):
+class InvalidId(Exception):
+    pass
+
+class KeywordAlreadyExists(Exception):
     pass
 
 ## Blacklist
@@ -103,25 +106,43 @@ class Blacklist:
     def add(self, keywords):
         if keywords == "": # No blank keywords
             raise BlankKeyword
-        self.items.append(BlacklistItem(keywords))
 
-    def remove(self, index):
-        if index < 0 or index > len(self.items)-1: #index must be in range
-            raise IndexOutOfRange
-        del self.items[index]
+        #perform same processing and check if already exists
+        keywords = keywords.replace('\n','')
+        keywords = keywords.replace('\t','')
+        keywords_list = keywords.split(',')
+        for i in range(len(keywords_list)):
+            keywords_list[i] = keywords_list[i].strip()
+
+        for item in self.items:
+            if item.keywords == keywords_list:
+                raise KeywordAlreadyExists
+
+        self.items.append(BlacklistItem(len(self.items),keywords))
+
+    def remove(self, id):
+        for item in self.items:
+            if item.id == id:
+                self.items.remove(item)
+                return True
+        raise InvalidId
 
 
 class BlacklistItem:
-    def __init__(self, keywords=""):
+    def __init__(self, id, keywords=""):
         if keywords == "": # No blank keywords
             raise BlankKeyword
         else:
+            keywords = keywords.replace('\n','')
+            keywords = keywords.replace('\t','')
+
             self.keywords = keywords.split(',')
 
             for i in range(len(self.keywords)):
                 self.keywords[i] = self.keywords[i].strip()
 
             self.active = True
+            self.id = id
 
     def contains_keyword(self, site):
         for word in keywords:
@@ -132,9 +153,6 @@ class BlacklistItem:
 ## Exceptions for BlockList
 
 class InvalidType(Exception):
-    pass
-
-class InvalidId(Exception):
     pass
 
 class EndBeforeStart(Exception):
@@ -165,8 +183,9 @@ class BlockList:
             if start_overlap or end_overlap or complete_overlap:
                 raise OverlapsExisting
 
-        self.blocks.append(Block(len(self.blocks),type, start, end))
-        return True
+        block = Block(len(self.blocks),type, start, end)
+        self.blocks.append(block)
+        return block
 
     def remove_block(self, id):
         for block in self.blocks:

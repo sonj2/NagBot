@@ -73,18 +73,26 @@ class DatePicker(TextInput):
     pHint_y = NumericProperty(0.5)
     pHint = ReferenceListProperty(pHint_x ,pHint_y)
 
-    def __init__(self, touch_switch=False, *args, **kwargs):
+    def __init__(self, touch_switch=False, date=None, *args, **kwargs):
         super(DatePicker, self).__init__(*args, **kwargs)
         
+        self.date = date
         self.touch_switch = touch_switch
         self.init_ui() 
         
     def init_ui(self):
         
-        self.text = cal_data.today_date()
+        if self.date != None:
+            self.text = "%d.%d.%d"%(self.date.month,
+                self.date.day,
+                self.date.year)
+        else:
+            self.text = cal_data.today_date()
+            
         # Calendar
         self.cal = CalendarWidget(as_popup=True, 
-                                  touch_switch=self.touch_switch)
+                                  touch_switch=self.touch_switch,
+                                  date=self.date)
         # Popup
         self.popup = Popup(content=self.cal, on_dismiss=self.update_value, 
                            title="")
@@ -106,19 +114,29 @@ class DatePicker(TextInput):
         
     def update_value(self, inst):
         """ Update textinput value on popup close """
-            
-        self.text = "%s.%s.%s" % tuple(self.cal.active_date)
+        day = self.cal.active_date[0]
+        month =  self.cal.active_date[1]
+        year =  self.cal.active_date[2]
+        
+        self.text = "%s.%s.%s" % (month, day, year)
         self.focus = False
 
 class CalendarWidget(RelativeLayout):
     """ Basic calendar widget """
     
-    def __init__(self, as_popup=False, touch_switch=False, *args, **kwargs):
+    def __init__(self, as_popup=False, touch_switch=False, date=None,
+    *args, **kwargs):
         super(CalendarWidget, self).__init__(*args, **kwargs)
         
         self.as_popup = as_popup
         self.touch_switch = touch_switch
         self.prepare_data()     
+        
+        if date != None:
+            self.active_date[0] = date.day
+            self.active_date[1] = date.month
+            self.active_date[2] = date.year
+        
         self.init_ui()
         
     def init_ui(self):
@@ -140,9 +158,9 @@ class CalendarWidget(RelativeLayout):
         self.sm = MonthsManager()
         self.add_widget(self.sm)
         
-        self.create_month_scr(self.quarter[1], toogle_today=True) 
+        self.create_month_scr(self.quarter[1], toggle_today=True) 
     
-    def create_month_scr(self, month, toogle_today=False):
+    def create_month_scr(self, month, toggle_today=False):
         """ Screen with calendar for one month """        
         
         scr = Screen()
@@ -172,7 +190,7 @@ class CalendarWidget(RelativeLayout):
                 
                 tbtn.bind(on_press=self.get_btn_value)
                 
-                if toogle_today:
+                if toggle_today:
                     # Down today button
                     if day[0] == self.active_date[0] and day[2] == 1:
                         tbtn.state = "down"
