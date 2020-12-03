@@ -207,8 +207,11 @@ class SchedulePage(BoxLayout):
                 button = Button(text=text, font_size=20)
                 if block.type == "Work":
                     button.background_color = [1, 0, 0, 1] #red RGBA
+                    button.bind(on_press=self.work_act)
+
                 elif block.type == "Break":
                     button.background_color = [0, 1, 0, 1] #green RGBA
+
                 else:
                     print("ERROR: Invalid Block Type")
 
@@ -241,6 +244,14 @@ class SchedulePage(BoxLayout):
         db.remove_block(block.id)
         self.gen_schedule()
 
+    def work_act(self, instance):
+        block = self.button_to_block[instance]
+
+        nag_bot_app.to_do_page.update_block(block)
+        nag_bot_app.screen_manager.transition.direction = 'up'
+        nag_bot_app.screen_manager.current = "To Do List"
+        nag_bot_app.to_do_page.previous_screen = "Schedule"
+
     #Button1 - Add Work/Break Block
     def button1_act(self, instance):
         rst_date = datetime.date(day=self.date[0], month=self.date[1],
@@ -264,6 +275,72 @@ class ToDoListPage(BoxLayout):
         super(ToDoListPage, self).__init__(**kwargs)
         self.orientation = "vertical"
         self.previous_screen = ""
+
+        self.block = None
+
+        #Block label at top of page
+        self.label = Button(text="", font_size=20)
+        self.label.size_hint_y = None
+        self.label.height = 58
+        self.add_widget(self.label)
+
+        #Title "To Do List" under label - left aligned
+        self.title = Label(text="To Do List",
+            font_size=25,
+            halign="left",
+            valign="middle",
+            padding=(10,0))
+        self.title.bind(size=self.title.setter('text_size'))
+        self.title.size_hint_y = None
+        self.title.height = 58
+        self.add_widget(self.title)
+
+        #Scrolling area for list
+        self.scroll = ScrollView()
+        self.scroll.size_hint_y = None
+        self.scroll.height = 400
+        self.add_widget(self.scroll)
+
+        #Buttons
+        self.button1 = Button(text="Add Task", font_size=20)
+        self.button1.bind(on_press=self.button1_act)
+        self.add_widget(self.button1)
+
+        self.button2 = Button(text="Edit Work Block", font_size=20)
+        self.button2.bind(on_press=self.button2_act)
+        self.add_widget(self.button2)
+
+        self.button3 = Button(text="Done", font_size=20)
+        self.button3.bind(on_press=self.button3_act)
+        self.add_widget(self.button3)
+
+    def update_block(self, block):
+        self.block = block
+        self.update()
+
+    def update(self):
+        #update the Block label at top of page
+        self.label.text = self.block.type
+        self.label.text += self.block.start.strftime(" %m/%d/%Y %H:%I %p")
+        self.label.text += self.block.end.strftime(" - %H:%I %p")
+
+        if self.block.type == "Work":
+            self.label.background_color = [1, 0, 0, 1] #red RGBA
+
+        elif self.block.type == "Break":
+            self.label.background_color = [0, 1, 0, 1] #green RGBA
+
+    def button1_act(self, instance):
+        pass
+
+    def button2_act(self, instance):
+        pass
+
+    def button3_act(self, instance):
+        nag_bot_app.screen_manager.transition.direction = 'down'
+        nag_bot_app.screen_manager.current = self.previous_screen
+        nag_bot_app.screen_manager.get_screen(
+            self.previous_screen).previous_screen = "To Do List"
 
 
 class AddTaskPage(BoxLayout):
@@ -675,6 +752,11 @@ class NagBotApp(App):
         screen = Screen(name="Edit Block")
         self.edit_block_page = EditBlockPage()
         screen.add_widget(self.edit_block_page)
+        self.screen_manager.add_widget(screen)
+
+        screen = Screen(name="To Do List")
+        self.to_do_page = ToDoListPage()
+        screen.add_widget(self.to_do_page)
         self.screen_manager.add_widget(screen)
 
         screen = Screen(name="Blacklist")
