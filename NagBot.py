@@ -91,8 +91,11 @@ class SchedulePage(BoxLayout):
         self.previous_screen = ""
 
         #Title - "Schedule" at top - left aligned
-        self.title = Label(text="Schedule", font_size=25, halign="left", valign="middle",
-                            padding=(10,0))
+        self.title = Label(text="Schedule",
+            font_size=25,
+            halign="left",
+            valign="middle",
+            padding=(10,0))
         self.title.bind(size=self.title.setter('text_size'))
         self.title.size_hint_y = None
         self.title.height = 58
@@ -133,13 +136,13 @@ class SchedulePage(BoxLayout):
                     Line(points=[0, y, Window.width, y], width=1)
 
                     if not is_PM:
-                        label = Label(text="%d:%s AM"%(hr,min), pos=(-200,
-                                    y-self.float.height/2 +10),
-                                    font_size=20)
+                        label = Label(text="%d:%s AM"%(hr,min),
+                            pos=(-200, y-self.float.height/2 +10),
+                            font_size=20)
                     else:
-                        label = Label(text="%d:%s PM"%(hr,min), pos=(-200,
-                                    y-self.float.height/2 +10),
-                                    font_size=20)
+                        label = Label(text="%d:%s PM"%(hr,min),
+                            pos=(-200, y-self.float.height/2 +10),
+                            font_size=20)
 
                     self.float.add_widget(label)
 
@@ -155,7 +158,8 @@ class SchedulePage(BoxLayout):
         self.add_widget(self.button2)
 
     def update_date(self, date):
-        self.title.text = "Schedule " + str(date[1]) + '/' + str(date[0]) + '/' + str(date[2])
+        self.title.text = "Schedule " + str(date[1]) + '/' + str(date[0])
+        self.title.text += '/' + str(date[2])
 
     #Button1 - Add Work/Break Block
     def button1_act(self, instance):
@@ -203,6 +207,8 @@ class BlacklistPage(BoxLayout):
         self.scroll.height = 500
         self.add_widget(self.scroll)
 
+
+
         #Buttons
         self.button1 = Button(text="Add to Blacklist", font_size=20)
         self.button1.bind(on_press=self.button1_act)
@@ -214,13 +220,16 @@ class BlacklistPage(BoxLayout):
 
     #Button1 - Add to Blacklist
     def button1_act(self, instance):
-        pass
+        nag_bot_app.screen_manager.transition.direction = 'left'
+        nag_bot_app.screen_manager.current = "Edit Blacklist"
+        nag_bot_app.edit_blacklist_page.previous_screen = "Blacklist"
 
     #Button 2 - Done - go back to previous page
     def button2_act(self, instance):
         nag_bot_app.screen_manager.transition.direction = 'right'
         nag_bot_app.screen_manager.current = self.previous_screen
-        nag_bot_app.screen_manager.get_screen(self.previous_screen).previous_screen = "Blacklist"
+        nag_bot_app.screen_manager.get_screen(
+            self.previous_screen).previous_screen = "Blacklist"
 
 
 class EditBlockPage(BoxLayout):
@@ -257,7 +266,8 @@ class EditBlockPage(BoxLayout):
         anchor = AnchorLayout(anchor_x='center', anchor_y='top')
         self.dropbutton = Button(text='SELECT',size_hint_y=None, height=44)
         self.dropbutton.bind(on_release=self.dropdown.open)
-        self.dropdown.bind(on_select=lambda instance, x: setattr(self.dropbutton, 'text', x))
+        self.dropdown.bind(on_select=lambda instance,
+            x: setattr(self.dropbutton, 'text', x))
         anchor.add_widget(self.dropbutton)
         self.form.add_widget(anchor)
 
@@ -317,7 +327,8 @@ class EditBlockPage(BoxLayout):
     def button3_act(self, instance):
         nag_bot_app.screen_manager.transition.direction = 'right'
         nag_bot_app.screen_manager.current = self.previous_screen
-        nag_bot_app.screen_manager.get_screen(self.previous_screen).previous_screen = "Edit Block"
+        nag_bot_app.screen_manager.get_screen(
+            self.previous_screen).previous_screen = "Edit Block"
         pass
 
 class EditBlacklistPage(BoxLayout):
@@ -325,6 +336,115 @@ class EditBlacklistPage(BoxLayout):
         super(EditBlacklistPage, self).__init__(**kwargs)
         self.orientation = "vertical"
         self.previous_screen = ""
+
+        #Title "Add/Edit Block" at top of page
+        self.title = Label(text="Edit Blacklist", font_size=25)
+        self.title.size_hint_y = None
+        self.title.height = 58
+        self.add_widget(self.title)
+
+        #Keywords
+        self.keywords_label = Label(text="Keywords",
+            font_size=25,
+            halign="left",
+            valign="middle",
+            padding=(10,0))
+        self.keywords_label.bind(size=self.keywords_label.setter(
+            'text_size'))
+        self.add_widget(self.keywords_label)
+
+        self.keywords = TextInput(font_size=25)
+        self.add_widget(self.keywords)
+
+        #Recently Visited Pages
+        self.recent_label = Label(text="Recently Visited Pages",
+            font_size=25,
+            halign="left",
+            valign="middle",
+            padding=(0,0))
+        self.recent_label.bind(size=self.recent_label.setter(
+            'text_size'))
+        self.add_widget(self.recent_label)
+
+        self.recent_scroll = ScrollView()
+        self.recent_scroll.size_hint_y = None
+        self.recent_scroll.height = 100
+        self.add_widget(self.recent_scroll)
+
+        self.recent_box = BoxLayout(orientation = "vertical")
+        self.recent_box.size_hint_y = None
+        self.recent_box.height = 500
+        self.recent_scroll.add_widget(self.recent_box)
+
+        for x in range(10):
+            recent = Label(text="TEST %d"%x,
+                font_size=25,
+                halign="left",
+                valign="top",
+                padding=(10,0))
+            recent.bind(size=recent.setter(
+                'text_size'))
+            self.recent_box.add_widget(recent)
+
+        #Common Keywords
+        self.common_label = Label(text="Common Keywords",
+            font_size=25,
+            halign="left",
+            valign="middle",
+            padding=(10,0))
+        self.common_label.bind(size=self.common_label.setter(
+            'text_size'))
+        self.add_widget(self.common_label)
+
+        self.common_scroll = ScrollView()
+        self.common_scroll.size_hint_y = None
+        self.common_scroll.height = 100
+        self.add_widget(self.common_scroll)
+
+        self.common_box = BoxLayout(orientation = "vertical")
+        self.common_box.size_hint_y = None
+        self.common_box.height = 500
+        self.common_scroll.add_widget(self.common_box)
+
+        for x in range(10):
+            common = Label(text="TEST %d"%x,
+                font_size=25,
+                halign="left",
+                valign="top",
+                padding=(10,0))
+            common.bind(size=common.setter(
+                'text_size'))
+            self.common_box.add_widget(common)
+
+        #Buttons
+        self.button1 = Button(text="Use Common Keywords", font_size=20)
+        self.button1.bind(on_press=self.button1_act)
+        self.add_widget(self.button1)
+
+        self.button2 = Button(text="Reset Recently Vistied", font_size=20)
+        self.button2.bind(on_press=self.button2_act)
+        self.add_widget(self.button2)
+
+        self.button3 = Button(text="Add To Blackist", font_size=20)
+        self.button3.bind(on_press=self.button3_act)
+        self.add_widget(self.button3)
+
+
+    #Button 1 - Use Common Keywords
+    def button1_act(self, instance):
+        pass
+
+    #Button 2 - Specialized Blacklist - go to Blacklist screen
+    def button2_act(self, instance):
+        pass
+
+    #Button 3 - Add To Blackist - return to previous screen
+    def button3_act(self, instance):
+        nag_bot_app.screen_manager.transition.direction = 'right'
+        nag_bot_app.screen_manager.current = self.previous_screen
+        nag_bot_app.screen_manager.get_screen(
+            self.previous_screen).previous_screen = "Edit Blackist"
+        pass
 
 class NagBotApp(App):
     def build(self):
@@ -348,6 +468,11 @@ class NagBotApp(App):
         screen = Screen(name="Blacklist")
         self.blacklist_page = BlacklistPage()
         screen.add_widget(self.blacklist_page)
+        self.screen_manager.add_widget(screen)
+
+        screen = Screen(name="Edit Blacklist")
+        self.edit_blacklist_page = EditBlacklistPage()
+        screen.add_widget(self.edit_blacklist_page)
         self.screen_manager.add_widget(screen)
 
         return self.screen_manager
