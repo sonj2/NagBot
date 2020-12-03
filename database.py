@@ -2,6 +2,8 @@
 
 from datetime import datetime, date, timedelta
 
+import pickle
+
 '''
 Database contains a Blacklist which contains multiple BlackListItems (which contain a keyword list and a boolean for if the item is active).
 
@@ -9,7 +11,7 @@ Database also contains a BlockList which contains multiple Blocks (which contain
 
 ToDoList  contains multiple Tasks (which contain a str description, str priority (High/Med/Low) and a boolean completed)
 
-Database is the primary object and all calls will be made using methods in Database which can then call the appropriate methods in other classes (serves as a Facade). It will also contain a save() method which will save the data (probably via the pickle library) in the case the app is closed.
+Database is the primary object and all calls will be made using methods in Database which can then call the appropriate methods in other classes (serves as a Facade). It will also contain a save() method which will save the data (via the pickle library) in the case the app is closed.
 
 '''
 
@@ -53,6 +55,30 @@ class Database:
     def remove_task(self, block_id, task_id):
         block = self.get_block(block_id)
         return block.remove_task(task_id)
+
+    def save(self):
+        dbfile = open('blacklist', 'ab')
+        pickle.dump(self.blacklist, dbfile)
+        dbfile.close()
+
+        dbfile = open('block_list', 'ab')
+        pickle.dump(self.block_list, dbfile)
+        dbfile.close()
+
+    def load(self):
+        try:
+            dbfile = open('blacklist', 'rb')
+            self.blacklist = pickle.load(dbfile)
+            dbfile.close()
+
+            dbfile = open('block_list', 'rb')
+            self.block_list = pickle.load(dbfile)
+            dbfile.close()
+
+            return True
+
+        except (OSError, IOError) as e:
+            return False
 
 ## Exceptions for Blacklist
 
