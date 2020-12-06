@@ -1,0 +1,17 @@
+# PynSource Version 1.2
+{'type':'meta', 'info1':'Lorem ipsum dolor sit amet, consectetur adipiscing elit is latin. Comments are saved.'}
+{'type':'umlshape', 'id':'CalendarPage', 'x':42, 'y':318, 'width':130, 'height':234, 'attrs': 'button1|button2|button3|cal|orientation|previous_screen|title', 'meths': '__init__|button1_act|button2_act|button3_act'}
+{'type':'umlshape', 'id':'SchedulePage', 'x':214, 'y':76, 'width':130, 'height':330, 'attrs': 'button1|button2|button_to_block|date|float|orientation|previous_screen|scroll|title', 'meths': '__init__|break_act|button1_act|button2_act|gen_schedule|remove_block|update_date|work_act'}
+{'type':'umlshape', 'id':'ToDoListPage', 'x':491, 'y':33, 'width':154, 'height':362, 'attrs': 'block|button1|button2|button3|label|list|orientation|previous_screen|scroll|title|ui_to_task', 'meths': '__init__|button1_act|button2_act|button3_act|on_checkbox_active|remove_task|update|update_block'}
+{'type':'umlshape', 'id':'AddTaskPage', 'x':1174, 'y':242, 'width':130, 'height':250, 'attrs': 'block|button1|dropbutton|dropdown|form|name|orientation|previous_screen|title', 'meths': '__init__|button1_act|set_block'}
+{'type':'umlshape', 'id':'BlacklistPage', 'x':691, 'y':135, 'width':154, 'height':314, 'attrs': 'blacklist|button1|button2|list|orientation|previous_screen|scroll|specialized|title|ui_to_item', 'meths': '__init__|button1_act|button2_act|gen_list|on_checkbox_active|remove_item'}
+{'type':'umlshape', 'id':'EditBlockPage', 'x':1342, 'y':266, 'width':146, 'height':442, 'attrs': 'block|button2|button3|dropbutton|dropdown|end_date|end_date_anchor|end_time|end_time_anchor|form|orientation|previous_screen|special_blacklist|start_date|start_date_anchor|start_time|start_time_anchor|title', 'meths': '__init__|button1_act|button2_act|button3_act|edit_block|reset'}
+{'type':'umlshape', 'id':'EditBlacklistPage', 'x':889, 'y':66, 'width':180, 'height':378, 'attrs': 'blacklist|button1|button2|button3|common_box|common_label|common_scroll|keywords|keywords_label|orientation|previous_screen|recent_box|recent_label|recent_scroll|specialized|title', 'meths': '__init__|button1_act|button2_act|button3_act'}
+{'type':'umlshape', 'id':'NagBotApp', 'x':678, 'y':503, 'width':162, 'height':218, 'attrs': 'add_task_page|blacklist_page|calendar_page|edit_blacklist_page|edit_block_page|schedule_page|screen_manager|to_do_page', 'meths': 'build|on_stop'}
+{'type':'edge', 'id':'CalendarPage_to_NagBotApp', 'source':'CalendarPage', 'target':'NagBotApp', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'BlacklistPage_to_NagBotApp', 'source':'BlacklistPage', 'target':'NagBotApp', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'EditBlockPage_to_NagBotApp', 'source':'EditBlockPage', 'target':'NagBotApp', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'ToDoListPage_to_NagBotApp', 'source':'ToDoListPage', 'target':'NagBotApp', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'EditBlacklistPage_to_NagBotApp', 'source':'EditBlacklistPage', 'target':'NagBotApp', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'SchedulePage_to_NagBotApp', 'source':'SchedulePage', 'target':'NagBotApp', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'AddTaskPage_to_NagBotApp', 'source':'AddTaskPage', 'target':'NagBotApp', 'uml_edge_type': 'composition'}

@@ -211,6 +211,7 @@ class SchedulePage(BoxLayout):
 
                 elif block.type == "Break":
                     button.background_color = [0, 1, 0, 1] #green RGBA
+                    button.bind(on_press=self.break_act)
 
                 else:
                     print("ERROR: Invalid Block Type")
@@ -252,6 +253,15 @@ class SchedulePage(BoxLayout):
         nag_bot_app.screen_manager.current = "To Do List"
         nag_bot_app.to_do_page.previous_screen = "Schedule"
 
+    def break_act(self, instance):
+        block = self.button_to_block[instance]
+
+        nag_bot_app.edit_block_page.edit_block(block)
+
+        nag_bot_app.screen_manager.transition.direction = 'left'
+        nag_bot_app.screen_manager.current = "Edit Block"
+        nag_bot_app.edit_block_page.previous_screen = "Schedule"
+
     #Button1 - Add Work/Break Block
     def button1_act(self, instance):
         rst_date = datetime.date(day=self.date[0], month=self.date[1],
@@ -261,7 +271,6 @@ class SchedulePage(BoxLayout):
         nag_bot_app.screen_manager.transition.direction = 'left'
         nag_bot_app.screen_manager.current = "Edit Block"
         nag_bot_app.edit_block_page.previous_screen = "Schedule"
-        pass
 
     #Button 2 - Back to Calendar - go back to the CalendarPage
     def button2_act(self, instance):
@@ -301,6 +310,12 @@ class ToDoListPage(BoxLayout):
         self.scroll.height = 400
         self.add_widget(self.scroll)
 
+        #ToDoList content
+        self.list = GridLayout(cols=3)
+        self.list.size_hint_y = None
+        self.list.height = 400
+        self.scroll.add_widget(self.list)
+
         #Buttons
         self.button1 = Button(text="Add Task", font_size=20)
         self.button1.bind(on_press=self.button1_act)
@@ -321,8 +336,8 @@ class ToDoListPage(BoxLayout):
     def update(self):
         #update the Block label at top of page
         self.label.text = self.block.type
-        self.label.text += self.block.start.strftime(" %m/%d/%Y %H:%I %p")
-        self.label.text += self.block.end.strftime(" - %H:%I %p")
+        self.label.text += self.block.start.strftime(" %m/%d/%Y %I:%M %p")
+        self.label.text += self.block.end.strftime(" - %I:%M %p")
 
         if self.block.type == "Work":
             self.label.background_color = [1, 0, 0, 1] #red RGBA
@@ -330,12 +345,60 @@ class ToDoListPage(BoxLayout):
         elif self.block.type == "Break":
             self.label.background_color = [0, 1, 0, 1] #green RGBA
 
+        #update the actual list
+        self.list.clear_widgets()
+        self.ui_to_task = {}
+
+        tasks = db.get_tasks(self.block.id)
+
+        if len(tasks) > 5:
+            self.list.height = 100 * len(tasks)
+
+        def on_checkbox_active(checkbox, value):
+            task = self.ui_to_task[checkbox]
+            if value:
+                task.completed=True
+            else:
+                task.competed=False
+
+        #generate list
+        for priority in ["High", "Med", "Low"]:
+            for task in tasks:
+                if task.priority == priority:
+                    checkbox = CheckBox(active=task.completed)
+                    self.ui_to_task[checkbox] = task
+                    checkbox.bind(active=on_checkbox_active)
+                    self.list.add_widget(checkbox)
+                    description = Label(text=task.description, font_size=20)
+                    self.list.add_widget(description)
+
+                    remove = Button(text="Remove", font_size=20)
+                    self.ui_to_task[remove] = task
+                    remove.bind(on_press=self.remove_task)
+                    self.list.add_widget(remove)
+
+    def remove_task(self, button):
+        task = self.ui_to_task[button]
+        db.remove_task(self.block.id, task.id)
+        db.save()
+        self.update()
+
+    #Button 1 - Add Task
     def button1_act(self, instance):
-        pass
+        nag_bot_app.add_task_page.set_block(self.block)
+        nag_bot_app.screen_manager.transition.direction = 'left'
+        nag_bot_app.screen_manager.current = "Add Task"
+        nag_bot_app.add_task_page.previous_screen = "To Do List"
 
+    #Button 2 - Edit Work Block
     def button2_act(self, instance):
-        pass
+        nag_bot_app.edit_block_page.edit_block(self.block)
 
+        nag_bot_app.screen_manager.transition.direction = 'down'
+        nag_bot_app.screen_manager.current = "Edit Block"
+        nag_bot_app.edit_block_page.previous_screen = "To Do List"
+
+    #Button 3 - Done
     def button3_act(self, instance):
         nag_bot_app.screen_manager.transition.direction = 'down'
         nag_bot_app.screen_manager.current = self.previous_screen
@@ -349,6 +412,69 @@ class AddTaskPage(BoxLayout):
         self.orientation = "vertical"
         self.previous_screen = ""
 
+        self.block = None
+
+        #Title "Add Task" at top of page
+        self.title = Label(text="Add Task", font_size=25)
+        self.title.size_hint_y = None
+        self.title.height = 58
+        self.add_widget(self.title)
+
+        #main form inside GridLayout
+        self.form = GridLayout(cols=2)
+        self.form.size_hint_y = None
+        self.form.height = 600
+        self.add_widget(self.form)
+
+        label = Label(text="Name:", font_size=20)
+        self.form.add_widget(label)
+        self.name = TextInput(font_size=20)
+        self.form.add_widget(self.name)
+
+        label = Label(text="Priority:", font_size=20)
+        self.form.add_widget(label)
+
+        self.dropdown = DropDown()
+
+        for item in ["High", "Med", "Low"]:
+            btn = Button(text= item,size_hint_y=None, height=80)
+            btn.bind(on_release=lambda btn: self.dropdown.select(btn.text))
+            self.dropdown.add_widget(btn)
+
+        anchor = AnchorLayout(anchor_x='center', anchor_y='center')
+        self.dropbutton = Button(text='SELECT',size_hint_y=None, height=100)
+        self.dropbutton.bind(on_release=self.dropdown.open)
+        self.dropdown.bind(on_select=lambda instance,
+            x: setattr(self.dropbutton, 'text', x))
+        anchor.add_widget(self.dropbutton)
+        self.form.add_widget(anchor)
+
+        #additional space fill with labels
+        for x in range(4):
+            self.form.add_widget(Label())
+
+        #Button
+        self.button1 = Button(text="Done", font_size=20)
+        self.button1.bind(on_press=self.button1_act)
+        self.add_widget(self.button1)
+
+    def set_block(self, block):
+        self.block = block
+
+    def button1_act(self, instance):
+        #provided form is filled out
+        if self.name.text != "" and self.dropbutton.text != "SELECT":
+            db.add_task(self.block.id, self.name.text,
+            self.dropbutton.text)
+            db.save()
+
+        nag_bot_app.to_do_page.update()
+
+        nag_bot_app.screen_manager.transition.direction = 'right'
+        nag_bot_app.screen_manager.current = "To Do List"
+
+        self.name.text = ""
+        self.dropbutton.text = "SELECT"
 
 class BlacklistPage(BoxLayout):
     def __init__(self, **kwargs):
@@ -426,6 +552,7 @@ class BlacklistPage(BoxLayout):
     def remove_item(self, instance):
         item = self.ui_to_item[instance]
         db.remove_blacklist(item.id)
+        db.save()
         self.gen_list(specialized=self.specialized)
 
 
@@ -514,9 +641,9 @@ class EditBlockPage(BoxLayout):
         self.form.add_widget(self.end_time_anchor)
 
         #Buttons
-        self.button1 = Button(text="Add Tasks", font_size=20)
-        self.button1.bind(on_press=self.button1_act)
-        self.add_widget(self.button1)
+        # self.button1 = Button(text="Add Tasks", font_size=20)
+        # self.button1.bind(on_press=self.button1_act)
+        # self.add_widget(self.button1)
 
         self.button2 = Button(text="Specialized Blacklist", font_size=20)
         self.button2.bind(on_press=self.button2_act)
@@ -527,6 +654,7 @@ class EditBlockPage(BoxLayout):
         self.add_widget(self.button3)
 
         self.special_blacklist = None
+        self.block = None
 
     #Button 1 - Add Tasks
     def button1_act(self, instance):
@@ -534,8 +662,13 @@ class EditBlockPage(BoxLayout):
 
     #Button 2 - Specialized Blacklist - go to Blacklist screen
     def button2_act(self, instance):
-        self.special_blacklist = deepcopy(db.get_blacklist())
-        nag_bot_app.blacklist_page.gen_list(specialized=self.special_blacklist)
+        if self.block == None or self.block.blacklist == None:
+            self.special_blacklist = deepcopy(db.get_blacklist())
+            nag_bot_app.blacklist_page.gen_list(
+                specialized=self.special_blacklist)
+        else:
+            nag_bot_app.blacklist_page.gen_list(
+                specialized=self.block.blacklist)
         nag_bot_app.screen_manager.transition.direction = 'left'
         nag_bot_app.screen_manager.current = "Blacklist"
         nag_bot_app.blacklist_page.previous_screen = "Edit Block"
@@ -563,9 +696,16 @@ class EditBlockPage(BoxLayout):
                 end_time[0], end_time[1], end_time[1])
 
             try:
-                block = db.add_block(type, start, end)
-                block.blacklist = self.special_blacklist
-                print("Block Added")
+                if self.block != None:
+                    print("Editing block")
+                    db.edit_block(self.block.id, type, start, end)
+                    if self.block.blacklist == None:
+                        self.block.blacklist = self.special_blacklist
+                else:
+                    block = db.add_block(type, start, end)
+                    block.blacklist = self.special_blacklist
+                    db.save()
+                    print("Block Added")
             except EndBeforeStart:
                 win32api.MessageBox(0,
                     '''NagBot: Cannot have block end before it starts.
@@ -580,6 +720,8 @@ class EditBlockPage(BoxLayout):
 
         #return to previous screen
         nag_bot_app.schedule_page.gen_schedule()
+        if self.block != None:
+            nag_bot_app.to_do_page.update_block(self.block)
 
         nag_bot_app.screen_manager.transition.direction = 'right'
         nag_bot_app.screen_manager.current = self.previous_screen
@@ -588,6 +730,7 @@ class EditBlockPage(BoxLayout):
 
     #reset form
     def reset(self,date):
+        self.block = None
         self.dropbutton.text = "SELECT"
 
         self.start_date_anchor.remove_widget(self.start_date)
@@ -597,6 +740,31 @@ class EditBlockPage(BoxLayout):
         self.end_date_anchor.remove_widget(self.end_date)
         self.end_date = DatePicker(size_hint_y=None, height=60, date=date)
         self.end_date_anchor.add_widget(self.end_date)
+
+    def edit_block(self,block):
+        self.block = block
+        self.dropbutton.text = block.type
+
+        self.start_time.text = block.start.strftime("%H:%M:%S")
+        self.end_time.text = block.end.strftime("%H:%M:%S")
+
+        start_date = datetime.date(block.start.year,
+            block.start.month,
+            block.start.day)
+        self.start_date_anchor.remove_widget(self.start_date)
+        self.start_date = DatePicker(size_hint_y=None, height=60,
+            date=start_date)
+        self.start_date_anchor.add_widget(self.start_date)
+
+        end_date = datetime.date(block.end.year,
+            block.end.month,
+            block.end.day)
+        self.end_date_anchor.remove_widget(self.end_date)
+        self.end_date = DatePicker(size_hint_y=None, height=60,
+            date=end_date)
+        self.end_date_anchor.add_widget(self.end_date)
+
+
 
 class EditBlacklistPage(BoxLayout):
     def __init__(self, **kwargs):
@@ -718,6 +886,7 @@ class EditBlacklistPage(BoxLayout):
         #add keywords to blacklist
         try:
             self.blacklist.add(self.keywords.text)
+            db.save()
         except BlankKeyword:
             pass
         except KeywordAlreadyExists:
@@ -757,6 +926,11 @@ class NagBotApp(App):
         screen = Screen(name="To Do List")
         self.to_do_page = ToDoListPage()
         screen.add_widget(self.to_do_page)
+        self.screen_manager.add_widget(screen)
+
+        screen = Screen(name="Add Task")
+        self.add_task_page = AddTaskPage()
+        screen.add_widget(self.add_task_page)
         self.screen_manager.add_widget(screen)
 
         screen = Screen(name="Blacklist")

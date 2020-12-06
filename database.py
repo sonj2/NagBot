@@ -35,6 +35,9 @@ class Database:
     def add_block(self, type, start, end):
         return self.block_list.add_block(type, start, end)
 
+    def edit_block(self, id, type, start, end):
+        return self.block_list.edit_block(id, type, start, end)
+
     def remove_block(self, id):
         return self.block_list.remove_block(id)
 
@@ -48,7 +51,7 @@ class Database:
         block = self.get_block(block_id)
         return block.get_tasks()
 
-    def add_task(self, block_id, description, priority, completed):
+    def add_task(self, block_id, description, priority, completed=False):
         block = self.get_block(block_id)
         return block.add_task(description, priority, completed)
 
@@ -187,6 +190,29 @@ class BlockList:
         self.blocks.append(block)
         return block
 
+    def edit_block(self, id, type, start, end):
+        #input validatation
+        if type != "Work" and type != "Break":
+            raise InvalidType
+        if start > end:
+            raise EndBeforeStart
+
+        #must not overlap existing block
+        for existing in self.blocks:
+            if existing.id == id:
+                continue
+            else:
+                start_overlap = start > existing.start and start < existing.end
+                end_overlap = end > existing.start and end < existing.end
+                complete_overlap = start <= existing.start and end >= existing.end
+
+                if start_overlap or end_overlap or complete_overlap:
+                    raise OverlapsExisting
+
+        block = self.get_block(id)
+        block.edit_block(type, start, end)
+        return block
+
     def remove_block(self, id):
         for block in self.blocks:
             if block.id == id:
@@ -223,6 +249,11 @@ class Block:
         self.end = end #datetime
         self.to_do = ToDoList() #ToDoList
         self.blacklist = blacklist #Blacklist
+
+    def edit_block(self, type, start, end):
+        self.type = type
+        self.start = start
+        self.end = end
 
     def get_tasks(self):
         return self.to_do.tasks

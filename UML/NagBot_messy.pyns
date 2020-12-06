@@ -1,0 +1,72 @@
+# PynSource Version 1.2
+{'type':'meta', 'info1':'Lorem ipsum dolor sit amet, consectetur adipiscing elit is latin. Comments are saved.'}
+{'type':'umlshape', 'id':'CalendarPage', 'x':20, 'y':222, 'width':130, 'height':234, 'attrs': 'button1|button2|button3|cal|orientation|previous_screen|title', 'meths': '__init__|button1_act|button2_act|button3_act'}
+{'type':'umlshape', 'id':'SchedulePage', 'x':329, 'y':162, 'width':130, 'height':330, 'attrs': 'button1|button2|button_to_block|date|float|orientation|previous_screen|scroll|title', 'meths': '__init__|break_act|button1_act|button2_act|gen_schedule|remove_block|update_date|work_act'}
+{'type':'umlshape', 'id':'ToDoListPage', 'x':514, 'y':119, 'width':154, 'height':362, 'attrs': 'block|button1|button2|button3|label|list|orientation|previous_screen|scroll|title|ui_to_task', 'meths': '__init__|button1_act|button2_act|button3_act|on_checkbox_active|remove_task|update|update_block'}
+{'type':'umlshape', 'id':'AddTaskPage', 'x':1165, 'y':194, 'width':130, 'height':250, 'attrs': 'block|button1|dropbutton|dropdown|form|name|orientation|previous_screen|title', 'meths': '__init__|button1_act|set_block'}
+{'type':'umlshape', 'id':'BlacklistPage', 'x':719, 'y':153, 'width':154, 'height':314, 'attrs': 'blacklist|button1|button2|list|orientation|previous_screen|scroll|specialized|title|ui_to_item', 'meths': '__init__|button1_act|button2_act|gen_list|on_checkbox_active|remove_item'}
+{'type':'umlshape', 'id':'EditBlockPage', 'x':1316, 'y':104, 'width':146, 'height':442, 'attrs': 'block|button2|button3|dropbutton|dropdown|end_date|end_date_anchor|end_time|end_time_anchor|form|orientation|previous_screen|special_blacklist|start_date|start_date_anchor|start_time|start_time_anchor|title', 'meths': '__init__|button1_act|button2_act|button3_act|edit_block|reset'}
+{'type':'umlshape', 'id':'EditBlacklistPage', 'x':923, 'y':100, 'width':180, 'height':378, 'attrs': 'blacklist|button1|button2|button3|common_box|common_label|common_scroll|keywords|keywords_label|orientation|previous_screen|recent_box|recent_label|recent_scroll|specialized|title', 'meths': '__init__|button1_act|button2_act|button3_act'}
+{'type':'umlshape', 'id':'NagBotApp', 'x':631, 'y':499, 'width':162, 'height':218, 'attrs': 'add_task_page|blacklist_page|calendar_page|edit_blacklist_page|edit_block_page|schedule_page|screen_manager|to_do_page', 'meths': 'build|on_stop'}
+{'type':'umlshape', 'id':'CalendarWidget', 'x':13, 'y':489, 'width':150, 'height':28, 'attrs': '', 'meths': ''}
+{'type':'umlshape', 'id':'BoxLayout', 'x':1025, 'y':664, 'width':100, 'height':28, 'attrs': '', 'meths': ''}
+{'type':'umlshape', 'id':'App', 'x':911, 'y':678, 'width':40, 'height':28, 'attrs': '', 'meths': ''}
+{'type':'umlshape', 'id':'TimePicker', 'x':1341, 'y':618, 'width':110, 'height':28, 'attrs': '', 'meths': ''}
+{'type':'umlshape', 'id':'Label', 'x':663, 'y':19, 'width':60, 'height':28, 'attrs': '', 'meths': ''}
+{'type':'umlshape', 'id':'TextInput', 'x':1019, 'y':18, 'width':100, 'height':28, 'attrs': '', 'meths': ''}
+{'type':'umlshape', 'id':'GridLayout', 'x':855, 'y':22, 'width':110, 'height':28, 'attrs': '', 'meths': ''}
+{'type':'umlshape', 'id':'Button', 'x':473, 'y':18, 'width':70, 'height':28, 'attrs': '', 'meths': ''}
+{'type':'umlshape', 'id':'DropDown', 'x':1193, 'y':91, 'width':90, 'height':28, 'attrs': '', 'meths': ''}
+{'type':'umlshape', 'id':'ScrollView', 'x':387, 'y':629, 'width':110, 'height':28, 'attrs': '', 'meths': ''}
+{'type':'umlshape', 'id':'AnchorLayout', 'x':1369, 'y':27, 'width':130, 'height':28, 'attrs': '', 'meths': ''}
+{'type':'umlshape', 'id':'FloatLayout', 'x':190, 'y':314, 'width':120, 'height':28, 'attrs': '', 'meths': ''}
+{'type':'umlshape', 'id':'ScreenManager', 'x':311, 'y':672, 'width':140, 'height':28, 'attrs': '', 'meths': ''}
+{'type':'umlshape', 'id':'DatePicker', 'x':1249, 'y':24, 'width':110, 'height':28, 'attrs': '', 'meths': ''}
+{'type':'edge', 'id':'CalendarPage_to_NagBotApp', 'source':'CalendarPage', 'target':'NagBotApp', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'BlacklistPage_to_NagBotApp', 'source':'BlacklistPage', 'target':'NagBotApp', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'EditBlockPage_to_NagBotApp', 'source':'EditBlockPage', 'target':'NagBotApp', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'ToDoListPage_to_NagBotApp', 'source':'ToDoListPage', 'target':'NagBotApp', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'EditBlacklistPage_to_NagBotApp', 'source':'EditBlacklistPage', 'target':'NagBotApp', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'SchedulePage_to_NagBotApp', 'source':'SchedulePage', 'target':'NagBotApp', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'AddTaskPage_to_NagBotApp', 'source':'AddTaskPage', 'target':'NagBotApp', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'CalendarWidget_to_CalendarPage', 'source':'CalendarWidget', 'target':'CalendarPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'BlacklistPage_to_BoxLayout', 'source':'BlacklistPage', 'target':'BoxLayout', 'uml_edge_type': 'generalisation'}
+{'type':'edge', 'id':'SchedulePage_to_BoxLayout', 'source':'SchedulePage', 'target':'BoxLayout', 'uml_edge_type': 'generalisation'}
+{'type':'edge', 'id':'ToDoListPage_to_BoxLayout', 'source':'ToDoListPage', 'target':'BoxLayout', 'uml_edge_type': 'generalisation'}
+{'type':'edge', 'id':'AddTaskPage_to_BoxLayout', 'source':'AddTaskPage', 'target':'BoxLayout', 'uml_edge_type': 'generalisation'}
+{'type':'edge', 'id':'CalendarPage_to_BoxLayout', 'source':'CalendarPage', 'target':'BoxLayout', 'uml_edge_type': 'generalisation'}
+{'type':'edge', 'id':'EditBlockPage_to_BoxLayout', 'source':'EditBlockPage', 'target':'BoxLayout', 'uml_edge_type': 'generalisation'}
+{'type':'edge', 'id':'NagBotApp_to_App', 'source':'NagBotApp', 'target':'App', 'uml_edge_type': 'generalisation'}
+{'type':'edge', 'id':'EditBlacklistPage_to_BoxLayout', 'source':'EditBlacklistPage', 'target':'BoxLayout', 'uml_edge_type': 'generalisation'}
+{'type':'edge', 'id':'TimePicker_to_EditBlockPage', 'source':'TimePicker', 'target':'EditBlockPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'Label_to_AddTaskPage', 'source':'Label', 'target':'AddTaskPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'TextInput_to_AddTaskPage', 'source':'TextInput', 'target':'AddTaskPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'GridLayout_to_EditBlockPage', 'source':'GridLayout', 'target':'EditBlockPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'Label_to_BlacklistPage', 'source':'Label', 'target':'BlacklistPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'Button_to_CalendarPage', 'source':'Button', 'target':'CalendarPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'DropDown_to_AddTaskPage', 'source':'DropDown', 'target':'AddTaskPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'Button_to_BlacklistPage', 'source':'Button', 'target':'BlacklistPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'ScrollView_to_EditBlacklistPage', 'source':'ScrollView', 'target':'EditBlacklistPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'Label_to_SchedulePage', 'source':'Label', 'target':'SchedulePage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'BoxLayout_to_EditBlacklistPage', 'source':'BoxLayout', 'target':'EditBlacklistPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'Button_to_EditBlacklistPage', 'source':'Button', 'target':'EditBlacklistPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'GridLayout_to_AddTaskPage', 'source':'GridLayout', 'target':'AddTaskPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'Button_to_ToDoListPage', 'source':'Button', 'target':'ToDoListPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'ScrollView_to_BlacklistPage', 'source':'ScrollView', 'target':'BlacklistPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'Label_to_EditBlacklistPage', 'source':'Label', 'target':'EditBlacklistPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'Label_to_EditBlockPage', 'source':'Label', 'target':'EditBlockPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'GridLayout_to_BlacklistPage', 'source':'GridLayout', 'target':'BlacklistPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'Button_to_EditBlockPage', 'source':'Button', 'target':'EditBlockPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'GridLayout_to_ToDoListPage', 'source':'GridLayout', 'target':'ToDoListPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'AnchorLayout_to_EditBlockPage', 'source':'AnchorLayout', 'target':'EditBlockPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'ScrollView_to_ToDoListPage', 'source':'ScrollView', 'target':'ToDoListPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'DropDown_to_EditBlockPage', 'source':'DropDown', 'target':'EditBlockPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'Button_to_SchedulePage', 'source':'Button', 'target':'SchedulePage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'FloatLayout_to_SchedulePage', 'source':'FloatLayout', 'target':'SchedulePage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'TextInput_to_EditBlacklistPage', 'source':'TextInput', 'target':'EditBlacklistPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'ScreenManager_to_NagBotApp', 'source':'ScreenManager', 'target':'NagBotApp', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'ScrollView_to_SchedulePage', 'source':'ScrollView', 'target':'SchedulePage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'Label_to_CalendarPage', 'source':'Label', 'target':'CalendarPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'DatePicker_to_EditBlockPage', 'source':'DatePicker', 'target':'EditBlockPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'Label_to_ToDoListPage', 'source':'Label', 'target':'ToDoListPage', 'uml_edge_type': 'composition'}
+{'type':'edge', 'id':'Button_to_AddTaskPage', 'source':'Button', 'target':'AddTaskPage', 'uml_edge_type': 'composition'}
