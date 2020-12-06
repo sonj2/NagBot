@@ -60,21 +60,21 @@ class Database:
         return block.remove_task(task_id)
 
     def save(self):
-        dbfile = open('blacklist', 'wb')
+        dbfile = open('data/blacklist', 'wb')
         pickle.dump(self.blacklist, dbfile)
         dbfile.close()
 
-        dbfile = open('block_list', 'wb')
+        dbfile = open('data/block_list', 'wb')
         pickle.dump(self.block_list, dbfile)
         dbfile.close()
 
     def load(self):
         try:
-            dbfile = open('blacklist', 'rb')
+            dbfile = open('data/blacklist', 'rb')
             self.blacklist = pickle.load(dbfile)
             dbfile.close()
 
-            dbfile = open('block_list', 'rb')
+            dbfile = open('data/block_list', 'rb')
             self.block_list = pickle.load(dbfile)
             dbfile.close()
 
