@@ -710,13 +710,13 @@ class EditBlockPage(BoxLayout):
                 win32api.MessageBox(0,
                     '''NagBot: Cannot have block end before it starts.
                     The block will not be added.''',
-                'EndBeforeStart', 0x00001000)
+                'End Before Start', 0x00001000)
             except OverlapsExisting:
                 win32api.MessageBox(0,
                     '''NagBot: The block you are attempting to add overlaps
                     with an existing block. The block will not be
                     added.''',
-                    'OverlapsExisting', 0x00001000)
+                    'Overlaps Existing', 0x00001000)
 
         #return to previous screen
         nag_bot_app.schedule_page.gen_schedule()
