@@ -101,7 +101,7 @@ class Blacklist:
         self.items = [] #array of BlacklistItem(s)
 
     def check(self, site):
-        for item in BlacklistItem:
+        for item in self.items:
             if item.active and item.contains_keyword(site):
                 return True
         return False
@@ -148,8 +148,8 @@ class BlacklistItem:
             self.id = id
 
     def contains_keyword(self, site):
-        for word in keywords:
-            if word.lower() in site.lower:
+        for word in self.keywords:
+            if word.lower() in site.lower():
                 return True
         return False
 

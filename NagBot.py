@@ -31,6 +31,9 @@ import win32api
 import datetime
 from copy import copy, deepcopy
 
+import threading
+from alerts import AlertSystem
+
 class CalendarPage(BoxLayout):
     def __init__(self, **kwargs):
         super(CalendarPage, self).__init__(**kwargs)
@@ -699,6 +702,7 @@ class EditBlockPage(BoxLayout):
                 if self.block != None:
                     print("Editing block")
                     db.edit_block(self.block.id, type, start, end)
+                    db.save()
                     if self.block.blacklist == None:
                         self.block.blacklist = self.special_blacklist
                 else:
@@ -948,12 +952,26 @@ class NagBotApp(App):
     def on_stop(self):
         import sys
         db.save()
+        alert_system.stop()
         sys.exit()
+
+def block_alert(alert_system):
+    alert_system.check_blocks(delay=5) #number of seconds between checks
+
+def blacklist_alert(alert_system):
+    alert_system.check_blacklist(delay=10) # number of seconds between checks
 
 if __name__ == "__main__":
     db = Database()
 
     db.load()
+
+    alert_system = AlertSystem(db)
+    block_thread = threading.Thread(target=block_alert, args=(alert_system,))
+    blacklist_thread = threading.Thread(target=blacklist_alert, args=(alert_system,))
+
+    block_thread.start()
+    blacklist_thread.start()
 
     nag_bot_app = NagBotApp()
     nag_bot_app.run()
