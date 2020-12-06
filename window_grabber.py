@@ -84,6 +84,11 @@ def get_active_window():
         print(sys.version)
     return active_window_name
 
-while(True):
-    print("Active window: %s" % str(get_active_window()))
-    sleep(10)
+if __name__ == "__main__":
+    prev = ""
+    while(True):
+        curr = get_active_window()
+        if prev != curr and curr != "" and "window_grabber" not in curr:
+            print("Active window: %s" % curr)
+            prev = curr
+        sleep(1)
