@@ -59,8 +59,11 @@ class AlertSystem:
             active_win = get_active_window()
 
             if blacklist.check(active_win):
-                '''NagBot: You are entering a blacklisted site during a
-                Work block! This is a friendly reminder to remain on task.'''
+                win32api.MessageBox(0,
+                    '''NagBot: You are entering a blacklisted site during a
+                    Work block! This is a friendly reminder to remain on task.''',
+                    'Entering Block', 0x00001000)
+
 
     def run(self, delay=60):
         self.run = True
