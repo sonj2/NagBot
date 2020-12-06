@@ -1,6 +1,4 @@
 #Database files
-data/blacklist
-data/block_list
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
