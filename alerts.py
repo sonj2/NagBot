@@ -71,4 +71,3 @@ class AlertSystem:
 
     def stop(self):
         self.run = False
-        self.run
