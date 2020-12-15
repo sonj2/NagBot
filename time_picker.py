@@ -5,6 +5,9 @@
 Circular Time Picker for Kivy
 ====================================
 
+Taken from https://github.com/kivy-garden/garden.circulardatetimepicker
+Under the MIT Liscense
+
 Version: 17.04.24
 
 Python: 3.3+

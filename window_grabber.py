@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 """
+https://stackoverflow.com/questions/10266281/obtain-active-window-using-python
+
 Find the currently active window.
 
 For Linux:

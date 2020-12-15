@@ -3,6 +3,10 @@
 
 """
 CircularLayout
+
+Taken from: https://github.com/kivy-garden/garden.circularlayout
+Under the MIT Liscense
+
 ==============
 
 CircularLayout is a special layout that places widgets around a circle.

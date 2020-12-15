@@ -24,7 +24,8 @@ class AlertSystem:
                     # and if not, send an alert.
                     if self.current_block != block:
                         self.near_end = False
-                        self.current_block = block
+                        self.current_block = block #store the current block -
+                                                   #used for checking blacklist
 
                         win32api.MessageBox(0,
                             '''NagBot: You are entering a %s Block running from
@@ -34,6 +35,8 @@ class AlertSystem:
                             block.end.strftime('%I:%M %p')),
                             'Entering Block', 0x00001000)
 
+                    # Otherwise if we are less than a minute from the end of a block
+                    # Notify the user that they are approaching the end of the block
                     else:
                         if (block.end - now) < timedelta(minutes=1) and not self.near_end:
                             self.near_end = True
@@ -51,16 +54,23 @@ class AlertSystem:
                     self.current_block = None
             sleep(delay)
 
+    # Function that checks if the active window is blacklisted periodically
+    # and alerts the user they are going off task if the site is blacklisted
     def check_blacklist(self, delay=10):
         while self.running:
             if self.current_block != None and self.current_block.type == "Work":
+                # If the block blacklist is None there is no "Specialized Blacklist"
+                # Use the global blacklist
                 if self.current_block.blacklist == None:
                     blacklist = self.db.get_blacklist()
+                # Otherwise use the Specialized Blackist specific to the current block
                 else:
                     blacklist = self.current_block.blacklist
 
+                #grab the active window - uses function form window_grabber.py
                 active_win = get_active_window()
 
+                #check the blacklist and make a pop-up if site is blacklisted
                 if blacklist.check(active_win):
                     win32api.MessageBox(0,
                         '''NagBot: You are entering a blacklisted site during a
