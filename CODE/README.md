@@ -27,7 +27,7 @@ The Denylist page should allow users to get suggested keywords by detecting site
 
 Ability to shift / change the work / break blocks though the notification pop up.
 
-Ability to import / export calendar data and genreate a summary of hours worked / hours spent taking a break
+Ability to import / export calendar data and generate a summary of hours worked / hours spent taking a break
 
 ## When using the Denylist
 
