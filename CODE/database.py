@@ -138,6 +138,7 @@ class DenylistItem:
         else:
             keywords = keywords.replace('\n','')
             keywords = keywords.replace('\t','')
+            keywords = keywords.replace(' ','')
 
             self.keywords = keywords.split(',')
 
