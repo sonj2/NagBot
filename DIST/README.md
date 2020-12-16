@@ -9,4 +9,4 @@ Here you can download the latest build. Download the entire folder (currently "N
 will appear. This is what we check against. Similarly for most apps it will be what appears at the top (upper left) of the window.
 
 **UI Flowchart (UI may differ a bit since we are still in beta)**
-![](images/GUI_Flowchart.svg)
+![](/images/GUI_Flowchart.svg)

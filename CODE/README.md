@@ -35,4 +35,4 @@ Ability to import / export calendar data and genreate a summary of hours worked 
 will appear. This is what we check against. Similarly for most apps it will be what appears at the top (upper left) of the window.
 
 ## UI Flowchart (UI may differ a bit since we are still in beta)
-![](images/GUI_Flowchart.svg)
+![](/images/GUI_Flowchart.svg)
