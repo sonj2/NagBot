@@ -1,7 +1,7 @@
 # NagBot
 SD&amp;D project
 
-Some diagrams to show how the implementation works so far. From an implementation standpoint here's how the different parts/python files interact (arrows showing flow if information not inheritance):
+Some diagrams to show how the implementation works so far. From an implementation standpoint here's how the different parts/python files interact (arrows showing flow of information not inheritance):
 ![](/UML/overall.PNG)
 
 Inside database is the main class structure that stores all the data for the app, the other files contain classes with methods that perform functions based on this data. The class structure for database.py looks something like this (with the exceptions that can be thrown by each class):
