@@ -5,9 +5,9 @@ from datetime import datetime, date, timedelta
 import pickle
 
 '''
-Database contains a Blacklist which contains multiple BlackListItems (which contain a keyword list and a boolean for if the item is active).
+Database contains a Denylist which contains multiple DenyListItems (which contain a keyword list and a boolean for if the item is active).
 
-Database also contains a BlockList which contains multiple Blocks (which contain a type ("Work" or "Break"), as well as a Start datetime and an End datetime,  a ToDoList  and a Blacklist  [if type="Work"] ).
+Database also contains a BlockList which contains multiple Blocks (which contain a type ("Work" or "Break"), as well as a Start datetime and an End datetime,  a ToDoList  and a Denylist  [if type="Work"] ).
 
 ToDoList  contains multiple Tasks (which contain a str description, str priority (High/Med/Low) and a boolean completed)
 
@@ -17,20 +17,20 @@ Database is the primary object and all calls will be made using methods in Datab
 
 class Database:
     def __init__(self):
-        self.blacklist = Blacklist()
+        self.denylist = Denylist()
         self.block_list = BlockList()
 
-    def get_blacklist(self):
-        return self.blacklist
+    def get_denylist(self):
+        return self.denylist
 
-    def check_blacklist(self, site):
-        return self.blacklist.check(site)
+    def check_denylist(self, site):
+        return self.denylist.check(site)
 
-    def add_blacklist(self, keywords):
-        return self.blacklist.add(keywords)
+    def add_denylist(self, keywords):
+        return self.denylist.add(keywords)
 
-    def remove_blacklist(self, id):
-        return self.blacklist.remove(id)
+    def remove_denylist(self, id):
+        return self.denylist.remove(id)
 
     def add_block(self, type, start, end):
         return self.block_list.add_block(type, start, end)
@@ -60,8 +60,8 @@ class Database:
         return block.remove_task(task_id)
 
     def save(self):
-        dbfile = open('data/blacklist', 'wb')
-        pickle.dump(self.blacklist, dbfile)
+        dbfile = open('data/denylist', 'wb')
+        pickle.dump(self.denylist, dbfile)
         dbfile.close()
 
         dbfile = open('data/block_list', 'wb')
@@ -70,8 +70,8 @@ class Database:
 
     def load(self):
         try:
-            dbfile = open('data/blacklist', 'rb')
-            self.blacklist = pickle.load(dbfile)
+            dbfile = open('data/denylist', 'rb')
+            self.denylist = pickle.load(dbfile)
             dbfile.close()
 
             dbfile = open('data/block_list', 'rb')
@@ -83,7 +83,7 @@ class Database:
         except (OSError, IOError) as e:
             return False
 
-## Exceptions for Blacklist
+## Exceptions for Denylist
 
 class BlankKeyword(Exception):
     pass
@@ -94,11 +94,11 @@ class InvalidId(Exception):
 class KeywordAlreadyExists(Exception):
     pass
 
-## Blacklist
+## Denylist
 
-class Blacklist:
+class Denylist:
     def __init__(self):
-        self.items = [] #array of BlacklistItem(s)
+        self.items = [] #array of DenylistItem(s)
 
     def check(self, site):
         for item in self.items:
@@ -121,7 +121,7 @@ class Blacklist:
             if item.keywords == keywords_list:
                 raise KeywordAlreadyExists
 
-        self.items.append(BlacklistItem(len(self.items),keywords))
+        self.items.append(DenylistItem(len(self.items),keywords))
 
     def remove(self, id):
         for item in self.items:
@@ -131,7 +131,7 @@ class Blacklist:
         raise InvalidId
 
 
-class BlacklistItem:
+class DenylistItem:
     def __init__(self, id, keywords=""):
         if keywords == "": # No blank keywords
             raise BlankKeyword
@@ -236,7 +236,7 @@ class BlockList:
         return blocks
 
 class Block:
-    def __init__(self, id, type, start, end, blacklist=None):
+    def __init__(self, id, type, start, end, denylist=None):
         #input validatation
         if type != "Work" and type != "Break":
             raise InvalidType
@@ -248,7 +248,7 @@ class Block:
         self.start = start #datetime
         self.end = end #datetime
         self.to_do = ToDoList() #ToDoList
-        self.blacklist = blacklist #Blacklist
+        self.denylist = denylist #Denylist
 
     def edit_block(self, type, start, end):
         self.type = type

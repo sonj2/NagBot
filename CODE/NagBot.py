@@ -61,7 +61,7 @@ class CalendarPage(BoxLayout):
         self.button2.bind(on_press=self.button2_act)
         self.add_widget(self.button2)
 
-        self.button3 = Button(text="View Blacklist", font_size=20)
+        self.button3 = Button(text="View Denylist", font_size=20)
         self.button3.bind(on_press=self.button3_act)
         self.add_widget(self.button3)
 
@@ -90,13 +90,13 @@ class CalendarPage(BoxLayout):
         nag_bot_app.screen_manager.current = "Schedule"
         nag_bot_app.schedule_page.previous_screen = "Calendar"
 
-    # Button 3 - View Blacklist - moves to the BlacklistPage
+    # Button 3 - View Denylist - moves to the DenylistPage
     def button3_act(self, instance):
-        nag_bot_app.blacklist_page.gen_list()
+        nag_bot_app.denylist_page.gen_list()
 
         nag_bot_app.screen_manager.transition.direction = 'left'
-        nag_bot_app.screen_manager.current = "Blacklist"
-        nag_bot_app.blacklist_page.previous_screen = "Calendar"
+        nag_bot_app.screen_manager.current = "Denylist"
+        nag_bot_app.denylist_page.previous_screen = "Calendar"
 
 
 class SchedulePage(BoxLayout):
@@ -479,28 +479,28 @@ class AddTaskPage(BoxLayout):
         self.name.text = ""
         self.dropbutton.text = "SELECT"
 
-class BlacklistPage(BoxLayout):
+class DenylistPage(BoxLayout):
     def __init__(self, **kwargs):
-        super(BlacklistPage, self).__init__(**kwargs)
+        super(DenylistPage, self).__init__(**kwargs)
         self.orientation = "vertical"
         self.previous_screen = ""
 
         self.specialized = None
         self.ui_to_item = {}
 
-        # Title "Blacklist" at top of page
-        self.title = Label(text="Blacklist", font_size=25)
+        # Title "Denylist" at top of page
+        self.title = Label(text="Denylist", font_size=25)
         self.title.size_hint_y = None
         self.title.height = 58
         self.add_widget(self.title)
 
-        # Scrolling area for blacklist
+        # Scrolling area for denylist
         self.scroll = ScrollView()
         self.scroll.size_hint_y = None
         self.scroll.height = 500
         self.add_widget(self.scroll)
 
-        # Blacklist content
+        # Denylist content
         self.list = GridLayout(cols=3)
         self.list.size_hint_y = None
         self.list.height = 500
@@ -509,7 +509,7 @@ class BlacklistPage(BoxLayout):
         self.gen_list()
 
         # Buttons
-        self.button1 = Button(text="Add to Blacklist", font_size=20)
+        self.button1 = Button(text="Add to Denylist", font_size=20)
         self.button1.bind(on_press=self.button1_act)
         self.add_widget(self.button1)
 
@@ -521,15 +521,15 @@ class BlacklistPage(BoxLayout):
         self.list.clear_widgets()
 
         self.specialized = specialized
-        # Blacklist content
+        # Denylist content
         if specialized == None:
-            self.blacklist = db.get_blacklist()
+            self.denylist = db.get_denylist()
         else:
-            self.blacklist = specialized
+            self.denylist = specialized
         self.ui_to_item = {}
 
-        if len(self.blacklist.items) > 5:
-            self.list.height = 100 * len(self.blacklist.items)
+        if len(self.denylist.items) > 5:
+            self.list.height = 100 * len(self.denylist.items)
 
         def on_checkbox_active(checkbox, value):
             item = self.ui_to_item[checkbox]
@@ -539,7 +539,7 @@ class BlacklistPage(BoxLayout):
             else:
                 item.active=False
 
-        for item in self.blacklist.items:
+        for item in self.denylist.items:
             checkbox = CheckBox(active=item.active)
             self.ui_to_item[checkbox] = item
             checkbox.bind(active=on_checkbox_active)
@@ -554,24 +554,24 @@ class BlacklistPage(BoxLayout):
 
     def remove_item(self, instance):
         item = self.ui_to_item[instance]
-        db.remove_blacklist(item.id)
+        db.remove_denylist(item.id)
         db.save()
         self.gen_list(specialized=self.specialized)
 
 
-    # Button1 - Add to Blacklist
+    # Button1 - Add to Denylist
     def button1_act(self, instance):
-        nag_bot_app.edit_blacklist_page.specialized = self.blacklist
+        nag_bot_app.edit_denylist_page.specialized = self.denylist
         nag_bot_app.screen_manager.transition.direction = 'left'
-        nag_bot_app.screen_manager.current = "Edit Blacklist"
-        nag_bot_app.edit_blacklist_page.previous_screen = "Blacklist"
+        nag_bot_app.screen_manager.current = "Edit Denylist"
+        nag_bot_app.edit_denylist_page.previous_screen = "Denylist"
 
     # Button 2 - Done - go back to previous page
     def button2_act(self, instance):
         nag_bot_app.screen_manager.transition.direction = 'right'
         nag_bot_app.screen_manager.current = self.previous_screen
         nag_bot_app.screen_manager.get_screen(
-            self.previous_screen).previous_screen = "Blacklist"
+            self.previous_screen).previous_screen = "Denylist"
 
 
 class EditBlockPage(BoxLayout):
@@ -648,7 +648,7 @@ class EditBlockPage(BoxLayout):
         # self.button1.bind(on_press=self.button1_act)
         # self.add_widget(self.button1)
 
-        self.button2 = Button(text="Specialized Blacklist", font_size=20)
+        self.button2 = Button(text="Specialized Denylist", font_size=20)
         self.button2.bind(on_press=self.button2_act)
         self.add_widget(self.button2)
 
@@ -656,25 +656,25 @@ class EditBlockPage(BoxLayout):
         self.button3.bind(on_press=self.button3_act)
         self.add_widget(self.button3)
 
-        self.special_blacklist = None
+        self.special_denylist = None
         self.block = None
 
     # Button 1 - Add Tasks
     def button1_act(self, instance):
         pass
 
-    # Button 2 - Specialized Blacklist - go to Blacklist screen
+    # Button 2 - Specialized Denylist - go to Denylist screen
     def button2_act(self, instance):
-        if self.block == None or self.block.blacklist == None:
-            self.special_blacklist = deepcopy(db.get_blacklist())
-            nag_bot_app.blacklist_page.gen_list(
-                specialized=self.special_blacklist)
+        if self.block == None or self.block.denylist == None:
+            self.special_denylist = deepcopy(db.get_denylist())
+            nag_bot_app.denylist_page.gen_list(
+                specialized=self.special_denylist)
         else:
-            nag_bot_app.blacklist_page.gen_list(
-                specialized=self.block.blacklist)
+            nag_bot_app.denylist_page.gen_list(
+                specialized=self.block.denylist)
         nag_bot_app.screen_manager.transition.direction = 'left'
-        nag_bot_app.screen_manager.current = "Blacklist"
-        nag_bot_app.blacklist_page.previous_screen = "Edit Block"
+        nag_bot_app.screen_manager.current = "Denylist"
+        nag_bot_app.denylist_page.previous_screen = "Edit Block"
         pass
 
     # Button 3 - Submit - add Block, return to previous screen
@@ -703,11 +703,11 @@ class EditBlockPage(BoxLayout):
                     print("Editing block")
                     db.edit_block(self.block.id, type, start, end)
                     db.save()
-                    if self.block.blacklist == None:
-                        self.block.blacklist = self.special_blacklist
+                    if self.block.denylist == None:
+                        self.block.denylist = self.special_denylist
                 else:
                     block = db.add_block(type, start, end)
-                    block.blacklist = self.special_blacklist
+                    block.denylist = self.special_denylist
                     db.save()
                     print("Block Added")
             except EndBeforeStart:
@@ -770,14 +770,14 @@ class EditBlockPage(BoxLayout):
 
 
 
-class EditBlacklistPage(BoxLayout):
+class EditDenylistPage(BoxLayout):
     def __init__(self, **kwargs):
-        super(EditBlacklistPage, self).__init__(**kwargs)
+        super(EditDenylistPage, self).__init__(**kwargs)
         self.orientation = "vertical"
         self.previous_screen = ""
 
         # Title "Add/Edit Block" at top of page
-        self.title = Label(text="Edit Blacklist", font_size=25)
+        self.title = Label(text="Edit Denylist", font_size=25)
         self.title.size_hint_y = None
         self.title.height = 58
         self.add_widget(self.title)
@@ -866,7 +866,7 @@ class EditBlacklistPage(BoxLayout):
         self.button2.bind(on_press=self.button2_act)
         self.add_widget(self.button2)
 
-        self.button3 = Button(text="Add To Blacklist", font_size=20)
+        self.button3 = Button(text="Add To Denylist", font_size=20)
         self.button3.bind(on_press=self.button3_act)
         self.add_widget(self.button3)
 
@@ -881,31 +881,31 @@ class EditBlacklistPage(BoxLayout):
     def button2_act(self, instance):
         pass
 
-    # Button 3 - Add To Blacklist - add keywords to blacklist,
+    # Button 3 - Add To Denylist - add keywords to denylist,
     # return to previous screen
     def button3_act(self, instance):
         if self.specialized == None:
-            self.blacklist = db.get_blacklist()
+            self.denylist = db.get_denylist()
         else:
-            self.blacklist = self.specialized
+            self.denylist = self.specialized
 
-        # add keywords to blacklist
+        # add keywords to denylist
         try:
-            self.blacklist.add(self.keywords.text)
+            self.denylist.add(self.keywords.text)
             db.save()
         except BlankKeyword:
             pass
         except KeywordAlreadyExists:
             pass
 
-        # update blacklist page
-        nag_bot_app.blacklist_page.gen_list(specialized=self.specialized)
+        # update denylist page
+        nag_bot_app.denylist_page.gen_list(specialized=self.specialized)
 
         # return to previous screen
         nag_bot_app.screen_manager.transition.direction = 'right'
         nag_bot_app.screen_manager.current = self.previous_screen
         nag_bot_app.screen_manager.get_screen(
-            self.previous_screen).previous_screen = "Edit Blackist"
+            self.previous_screen).previous_screen = "Edit Denyist"
 
         # reset keyword text
         self.keywords.text = ""
@@ -942,14 +942,14 @@ class NagBotApp(App):
         screen.add_widget(self.add_task_page)
         self.screen_manager.add_widget(screen)
 
-        screen = Screen(name="Blacklist")
-        self.blacklist_page = BlacklistPage()
-        screen.add_widget(self.blacklist_page)
+        screen = Screen(name="Denylist")
+        self.denylist_page = DenylistPage()
+        screen.add_widget(self.denylist_page)
         self.screen_manager.add_widget(screen)
 
-        screen = Screen(name="Edit Blacklist")
-        self.edit_blacklist_page = EditBlacklistPage()
-        screen.add_widget(self.edit_blacklist_page)
+        screen = Screen(name="Edit Denylist")
+        self.edit_denylist_page = EditDenylistPage()
+        screen.add_widget(self.edit_denylist_page)
         self.screen_manager.add_widget(screen)
 
         # return the ScreenManager as our top level
@@ -963,13 +963,13 @@ class NagBotApp(App):
         alert_system.stop()
         sys.exit()
 
-# methods that call the check_blocks and check_blacklist loops in alerts.py
+# methods that call the check_blocks and check_denylist loops in alerts.py
 # respectively. Will be run in separate threads
 def block_alert(alert_system):
     alert_system.check_blocks(delay=5) # number of seconds between checks
 
-def blacklist_alert(alert_system):
-    alert_system.check_blacklist(delay=10) # number of seconds between checks
+def denylist_alert(alert_system):
+    alert_system.check_denylist(delay=10) # number of seconds between checks
 
 if __name__ == "__main__":
     db = Database()
@@ -980,11 +980,11 @@ if __name__ == "__main__":
     # create the AlertSystem threads using the methods defined above
     alert_system = AlertSystem(db)
     block_thread = threading.Thread(target=block_alert, args=(alert_system,))
-    blacklist_thread = threading.Thread(target=blacklist_alert, args=(alert_system,))
+    denylist_thread = threading.Thread(target=denylist_alert, args=(alert_system,))
 
     #start the AlertSystem threads
     block_thread.start()
-    blacklist_thread.start()
+    denylist_thread.start()
 
     #create and start the app
     nag_bot_app = NagBotApp()

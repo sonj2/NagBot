@@ -25,7 +25,7 @@ class AlertSystem:
                     if self.current_block != block:
                         self.near_end = False
                         self.current_block = block #store the current block -
-                                                   #used for checking blacklist
+                                                   #used for checking denylist
 
                         win32api.MessageBox(0,
                             '''NagBot: You are entering a %s Block running from
@@ -54,26 +54,26 @@ class AlertSystem:
                     self.current_block = None
             sleep(delay)
 
-    # Function that checks if the active window is blacklisted periodically
-    # and alerts the user they are going off task if the site is blacklisted
-    def check_blacklist(self, delay=10):
+    # Function that checks if the active window is denylisted periodically
+    # and alerts the user they are going off task if the site is denylisted
+    def check_denylist(self, delay=10):
         while self.running:
             if self.current_block != None and self.current_block.type == "Work":
-                # If the block blacklist is None there is no "Specialized Blacklist"
-                # Use the global blacklist
-                if self.current_block.blacklist == None:
-                    blacklist = self.db.get_blacklist()
-                # Otherwise use the Specialized Blackist specific to the current block
+                # If the block denylist is None there is no "Specialized Denylist"
+                # Use the global denylist
+                if self.current_block.denylist == None:
+                    denylist = self.db.get_denylist()
+                # Otherwise use the Specialized Denyist specific to the current block
                 else:
-                    blacklist = self.current_block.blacklist
+                    denylist = self.current_block.denylist
 
                 #grab the active window - uses function form window_grabber.py
                 active_win = get_active_window()
 
-                #check the blacklist and make a pop-up if site is blacklisted
-                if blacklist.check(active_win):
+                #check the denylist and make a pop-up if site is denylisted
+                if denylist.check(active_win):
                     win32api.MessageBox(0,
-                        '''NagBot: You are entering a blacklisted site during a
+                        '''NagBot: You are entering a denylisted site during a
                         Work block! This is a friendly reminder to remain on task.''',
                         'Entering Block', 0x00001000)
             sleep(delay)
