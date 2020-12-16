@@ -25,7 +25,7 @@ SD&amp;D project
 
 The Denylist page should allow users to get suggested keywords by detecting sites visited, listing them and then scanning for common words among the titles
 
-Ability to shift/change the work/break blocks though the notification pop up.
+Ability to shift / change the work / break blocks though the notification pop up.
 
 Ability to import / export calendar data and genreate a summary of hours worked / hours spent taking a break
 
